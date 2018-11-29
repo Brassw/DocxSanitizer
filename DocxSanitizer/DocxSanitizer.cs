@@ -9,8 +9,8 @@ namespace DocxSanitizer
 {
     public class DocxSanitizer
     {
-        // Overwriting these causes problems 
-        static private string[] ignoredKeys = new string[] { "dcterms" };
+        // Overwriting these might cause problems 
+        private static readonly string[] ignoredKeys = new string[] { "dcterms" };
         private Logger log;
         public Summary Summary;
 
@@ -18,14 +18,6 @@ namespace DocxSanitizer
         {
             log = new Logger();
             Summary = new Summary();
-        }
-
-        public void Sanitize(IEnumerable<string> filepaths)
-        {
-            foreach(var filepath in filepaths)
-            {
-                Sanitize(filepath);
-            }
         }
 
         public void Sanitize(string filepath)
@@ -59,16 +51,14 @@ namespace DocxSanitizer
                         log.Verbose("  Removing custom property {0}={1}.", keyVal.Key, keyVal.Value);
                         document.CustomProperties.Remove(keyVal.Key);
                     }
-                    document.Save();
-                    Console.WriteLine("  Processed file '" + filepath + "'.");
+                    document.Save(); 
                     Summary.FileCount++;
                 }
             }
             catch(Exception e)
             {
                 Summary.ErrorCount++;
-                Console.Error.WriteLine("  Error processing file '" + filepath + "': " + e.Message);
-                log.Debug(e.ToString());
+                throw e;
             }
         }
     }

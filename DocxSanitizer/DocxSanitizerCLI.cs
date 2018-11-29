@@ -28,9 +28,20 @@ namespace DocxSanitizer
 
                     Console.WriteLine("Sanitizing total " + files.Count + " files.");
                     DocxSanitizer sanitizer = new DocxSanitizer();
-                    sanitizer.Sanitize(files);
+                    foreach(var file in files) {
+                        try
+                        {
+                            sanitizer.Sanitize(file);
+                            Console.WriteLine("  Processed file '" + file + "'.");
+                        }
+                        catch(Exception e)
+                        {
+                            Console.Error.WriteLine("  Error processing file '" + file + "': " + e.Message);
+                            log.Debug(e.ToString());
+                        }
+                    }
                     Console.Write("Finished sanitation. ");
-                    Console.WriteLine(sanitizer.Summary.formatSummary());
+                    Console.WriteLine(sanitizer.Summary.FormatSummary());
                 }
                 catch(Exception e)
                 {
@@ -79,7 +90,7 @@ namespace DocxSanitizer
 
         static void printUsage()
         {
-            Console.WriteLine("Docx Sanitizer removes metadata from .docx files.\n");
+            Console.WriteLine("DocxSanitizer removes metadata from .docx files.\n");
             Console.WriteLine("Usage:");
             Console.WriteLine("    DocxSanitizer [files]\n");
             Console.WriteLine("Parameters:");
