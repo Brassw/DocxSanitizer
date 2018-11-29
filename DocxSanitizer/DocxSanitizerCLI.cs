@@ -1,19 +1,16 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using Serilog;
 
 namespace DocxSanitizer
 {
     class DocxSanitizerCLI
     {
+        private static Logger log;
+
         static void Main(string[] args)
         {
-            var log = new LoggerConfiguration()
-                .MinimumLevel.Fatal()
-                .WriteTo.Console()
-                .CreateLogger();
-            Log.Logger = log;
+            log = new Logger();
 
             if(args.Length > 0)
             {
@@ -21,7 +18,7 @@ namespace DocxSanitizer
                 {
                     var files = parseArgs(args);
 
-                    if(log.IsEnabled(Serilog.Events.LogEventLevel.Debug)) {
+                    if(log.IsDebugEnabled()) {
                         log.Debug("Parsed list of files:");
                         foreach(var file in files)
                         {
@@ -39,6 +36,7 @@ namespace DocxSanitizer
                 {
                     Console.Error.WriteLine(e.Message);
                     Console.Error.WriteLine("Halting process.\n");
+                    Console.Error.WriteLine("Stacktrace:\n" + e);
                     printUsage();
                 }
             }
@@ -59,7 +57,7 @@ namespace DocxSanitizer
                     int lastIndex = file.LastIndexOfAny(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
                     var path = file.Substring(0, lastIndex);
                     var wildcard = file.Substring(lastIndex + 1);
-                    Log.Verbose("Split expression '{file}' into '{path}' and '{wildcard}'", file, path, wildcard);
+                    log.Verbose("Split expression '{0}' into '{1}' and '{2}'", file, path, wildcard);
                     string[] globbedFiles = Directory.GetFiles(@path, wildcard);
                     list.AddRange(globbedFiles);
                 }
