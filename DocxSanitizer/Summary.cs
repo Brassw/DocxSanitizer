@@ -11,7 +11,7 @@ namespace DocxSanitizer
         public long FileCount = 0;
         public long ErrorCount = 0;
 
-        public String formatSummary()
+        public String FormatSummary()
         {
             return "Sanitized successfully " + FileCount + " files, " + ErrorCount + " files with errors.";
         }

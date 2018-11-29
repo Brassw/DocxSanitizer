@@ -8,7 +8,7 @@ namespace DocxSanitizer
 {
     class Logger
     {
-        private bool debugEnabled = false;
+        private readonly bool debugEnabled = false;
 
         public Logger()
         {
