@@ -16,7 +16,7 @@ namespace DocxSanitizer
             {
                 try
                 {
-                    var files = parseArgs(args);
+                    var files = ParseArgs(args);
 
                     if(log.IsDebugEnabled()) {
                         log.Debug("Parsed list of files:");
@@ -52,46 +52,46 @@ namespace DocxSanitizer
             }
             else
             {
-                printUsage();
+                PrintUsage();
             }
         }
 
-        static List<string> parseArgs(string[] files)
+        static List<string> ParseArgs(string[] filepaths)
         {
             var list = new List<string>();
-            foreach(var file in files)
+            foreach(var filepath in filepaths)
             {
                 // Parse wildcard expressions
-                if(file.Contains("*"))
+                if(filepath.Contains("*"))
                 {
                     var path = ".";
-                    int lastIndex = file.LastIndexOfAny(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
+                    int lastIndex = filepath.LastIndexOfAny(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
                     if(lastIndex != -1)
                     {
-                        path = file.Substring(0, lastIndex);
+                        path = filepath.Substring(0, lastIndex);
                     }
-                    var wildcard = file.Substring(lastIndex + 1);
-                    log.Verbose("Split expression '{0}' into '{1}' and '{2}'", file, path, wildcard);
+                    var wildcard = filepath.Substring(lastIndex + 1);
+                    log.Verbose("Split expression '{0}' into '{1}' and '{2}'", filepath, path, wildcard);
                     string[] globbedFiles = Directory.GetFiles(@path, wildcard);
                     list.AddRange(globbedFiles);
                 }
                 // Use single file
                 else
                 {
-                    if(File.Exists(file))
+                    if(File.Exists(filepath))
                     {
-                        list.Add(file);
+                        list.Add(filepath);
                     }
                     else
                     {
-                        throw new Exception("Unable to parse expression: " + file);
+                        throw new Exception("Unable to parse expression: " + filepath);
                     }
                 }
             }
             return list;
         }
 
-        static void printUsage()
+        static void PrintUsage()
         {
             Console.WriteLine("DocxSanitizer removes metadata from .docx files.\n");
             Console.WriteLine("Usage:");

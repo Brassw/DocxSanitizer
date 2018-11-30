@@ -9,8 +9,8 @@ namespace DocxSanitizer
 {
     public class DocxSanitizer
     {
-        // Overwriting these might cause problems 
-        private static readonly string[] ignoredKeys = new string[] { "dcterms" };
+        // Overwriting these properties might cause problems 
+        private static readonly string[] ignoredProperties = new string[] { "dcterms" };
         private Logger log;
         public Summary Summary;
 
@@ -27,29 +27,29 @@ namespace DocxSanitizer
                 using(var document = DocX.Load(filepath))
                 {
                     log.Debug("Processing file {0}", filepath);
-                    foreach(var keyVal in document.CoreProperties)
+                    foreach(var property in document.CoreProperties)
                     {
                         bool ignore = false;
-                        foreach(var ignoredKey in ignoredKeys)
+                        foreach(var ignoredProperty in ignoredProperties)
                         {
-                            if(keyVal.Key.Contains(ignoredKey))
+                            if(property.Key.Contains(ignoredProperty))
                             {
                                 ignore = true;
                             }
                         }
                         if(ignore)
                         {
-                            log.Verbose("  Ignoring core property {0}={1}.", keyVal.Key, keyVal.Value);
+                            log.Verbose("  Ignoring core property {0}={1}.", property.Key, property.Value);
                         }
                         else {
-                            log.Verbose("  Overwriting core property {0}={1} with blank value.", keyVal.Key, keyVal.Value);
-                            document.AddCoreProperty(keyVal.Key, "");
+                            log.Verbose("  Overwriting core property {0}={1} with blank value.", property.Key, property.Value);
+                            document.AddCoreProperty(property.Key, "");
                         }
                     }
-                    foreach(var keyVal in document.CustomProperties)
+                    foreach(var property in document.CustomProperties)
                     {
-                        log.Verbose("  Removing custom property {0}={1}.", keyVal.Key, keyVal.Value);
-                        document.CustomProperties.Remove(keyVal.Key);
+                        log.Verbose("  removing custom property {0}={1}.", property.Key, property.Value);
+                        document.CustomProperties.Remove(property.Key);
                     }
                     document.Save(); 
                     Summary.FileCount++;
