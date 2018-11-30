@@ -46,11 +46,6 @@ namespace DocxSanitizer
                             document.AddCoreProperty(property.Key, "");
                         }
                     }
-                    foreach(var property in document.CustomProperties)
-                    {
-                        log.Verbose("  removing custom property {0}={1}.", property.Key, property.Value);
-                        document.CustomProperties.Remove(property.Key);
-                    }
                     document.Save(); 
                     Summary.FileCount++;
                 }
