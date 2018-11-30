@@ -48,7 +48,6 @@ namespace DocxSanitizer
                     Console.Error.WriteLine(e.Message);
                     Console.Error.WriteLine("Halting process.\n");
                     Console.Error.WriteLine("Stacktrace:\n" + e);
-                    printUsage();
                 }
             }
             else
@@ -65,8 +64,12 @@ namespace DocxSanitizer
                 // Parse wildcard expressions
                 if(file.Contains("*"))
                 {
+                    var path = ".";
                     int lastIndex = file.LastIndexOfAny(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
-                    var path = file.Substring(0, lastIndex);
+                    if(lastIndex != -1)
+                    {
+                        path = file.Substring(0, lastIndex);
+                    }
                     var wildcard = file.Substring(lastIndex + 1);
                     log.Verbose("Split expression '{0}' into '{1}' and '{2}'", file, path, wildcard);
                     string[] globbedFiles = Directory.GetFiles(@path, wildcard);
