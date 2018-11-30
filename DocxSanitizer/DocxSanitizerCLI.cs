@@ -84,7 +84,7 @@ namespace DocxSanitizer
                     }
                     else
                     {
-                        throw new Exception("Unable to parse expression: " + filepath);
+                        throw new Exception("File doesn't exist: " + filepath);
                     }
                 }
             }
