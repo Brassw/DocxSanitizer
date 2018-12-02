@@ -11,37 +11,12 @@ namespace DocxSanitizer
         static void Main(string[] args)
         {
             log = new Logger();
-
             if(args.Length > 0)
             {
                 try
                 {
                     var files = ParseArgs(args);
-
-                    if(log.IsDebugEnabled()) {
-                        log.Debug("Parsed list of files:");
-                        foreach(var file in files)
-                        {
-                            log.Debug("  " + file);
-                        }
-                    }
-
-                    Console.WriteLine("Sanitizing total " + files.Count + " files.");
-                    DocxSanitizer sanitizer = new DocxSanitizer();
-                    foreach(var file in files) {
-                        try
-                        {
-                            sanitizer.Sanitize(file);
-                            Console.WriteLine("  Processed file '" + file + "'.");
-                        }
-                        catch(Exception e)
-                        {
-                            Console.Error.WriteLine("  Error processing file '" + file + "': " + e.Message);
-                            log.Debug(e.ToString());
-                        }
-                    }
-                    Console.Write("Finished sanitation. ");
-                    Console.WriteLine(sanitizer.Summary.FormatSummary());
+                    Sanitize(files);
                 }
                 catch(Exception e)
                 {
@@ -56,7 +31,7 @@ namespace DocxSanitizer
             }
         }
 
-        static List<string> ParseArgs(string[] filepaths)
+        private static List<string> ParseArgs(string[] filepaths)
         {
             var list = new List<string>();
             foreach(var filepath in filepaths)
@@ -91,7 +66,37 @@ namespace DocxSanitizer
             return list;
         }
 
-        static void PrintUsage()
+        private static void Sanitize(List<string> files)
+        {
+            if(log.IsDebugEnabled())
+            {
+                log.Debug("Parsed list of files:");
+                foreach(var file in files)
+                {
+                    log.Debug("  " + file);
+                }
+            }
+
+            Console.WriteLine("Sanitizing total " + files.Count + " files.");
+            DocxSanitizer sanitizer = new DocxSanitizer();
+            foreach(var file in files)
+            {
+                try
+                {
+                    sanitizer.Sanitize(file);
+                    Console.WriteLine("  Processed file '" + file + "'.");
+                }
+                catch(Exception e)
+                {
+                    Console.Error.WriteLine("  Error processing file '" + file + "': " + e.Message);
+                    log.Debug(e.ToString());
+                }
+            }
+            Console.Write("Finished sanitation. ");
+            Console.WriteLine(sanitizer.Summary.FormatSummary());
+        }
+
+        private static void PrintUsage()
         {
             Console.WriteLine("DocxSanitizer removes metadata from .docx files.\n");
             Console.WriteLine("Usage:");

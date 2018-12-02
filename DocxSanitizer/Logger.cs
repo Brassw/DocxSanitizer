@@ -8,13 +8,14 @@ namespace DocxSanitizer
 {
     class Logger
     {
+        private const string DebugEnabledEnvironmentVar = "DOCX_SANITIZER_DEBUG";
         private readonly bool debugEnabled = false;
 
         public Logger()
         {
             try
             {
-                var debugEnv = System.Environment.GetEnvironmentVariable("DOCX_SANITIZER_DEBUG");
+                var debugEnv = System.Environment.GetEnvironmentVariable(DebugEnabledEnvironmentVar);
                 if("true".Equals(debugEnv))
                 {
                     debugEnabled = true;
